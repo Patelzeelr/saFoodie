@@ -1,11 +1,10 @@
-import 'package:sa_foodie/src/base/api/url_factory.dart';
-import 'package:sa_foodie/src/ui/dashboard/model/get_all_recipe_model.dart';
-import 'package:sa_foodie/src/ui/recipe/model/delete_recipe_res_model.dart';
-import 'package:sa_foodie/src/ui/recipe/model/update_recipe_res_model.dart';
-
 import '../../base/api/base_api.dart';
+import '../../base/api/url_factory.dart';
+import '../../ui/dashboard/model/get_all_recipe_model.dart';
 import '../../ui/recipe/model/add_recipe_req_model.dart';
 import '../../ui/recipe/model/add_recipe_res_model.dart';
+import '../../ui/recipe/model/delete_recipe_res_model.dart';
+import '../../ui/recipe/model/update_recipe_res_model.dart';
 
 class RecipeApi {
   static Future<AddRecipeResModel> addRecipe(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sa_foodie/src/utils/localizations/language/languages.dart';
 
 import '../../auth/signin/model/signin_res_model.dart';
 import '../../recipe/screens/add_recipe_screen.dart';
@@ -67,22 +68,22 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
             topRight: Radius.circular(30.0),
           ),
           child: BottomNavigationBar(
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.fastfood_sharp),
-                label: 'Recipes',
+                icon: const Icon(Icons.fastfood_sharp),
+                label: Languages.of(context)!.bottomRecipe,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.add_box_sharp),
-                label: 'Add Recipe',
+                icon: const Icon(Icons.add_box_sharp),
+                label: Languages.of(context)!.bottomAddRecipe,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.supervised_user_circle_sharp),
-                label: 'Users',
+                icon: const Icon(Icons.supervised_user_circle_sharp),
+                label: Languages.of(context)!.bottomUsers,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle_sharp),
-                label: 'Account',
+                icon: const Icon(Icons.account_circle),
+                label: Languages.of(context)!.bottomUser,
               ),
             ],
             currentIndex: _selectedIndex,
@@ -96,11 +97,8 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      //
-      //
-      //using this page controller you can make beautiful animation effects
       _pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.easeOut);
+          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
     });
   }
 }

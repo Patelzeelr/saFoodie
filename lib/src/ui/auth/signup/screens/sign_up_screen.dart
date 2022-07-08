@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sa_foodie/src/base/api/url_factory.dart';
-import 'package:sa_foodie/src/utils/methods/navigation_method.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../api/auth/auth_api.dart';
+import '../../../../base/api/url_factory.dart';
 import '../../../../utils/constants/asset_constants.dart';
-import '../../../../utils/constants/string_constants.dart';
+import '../../../../utils/constants/style_constants.dart';
+import '../../../../utils/localizations/language/languages.dart';
 import '../../../../utils/methods/field_focus_change.dart';
+import '../../../../utils/methods/navigation_method.dart';
+import '../../../../utils/methods/scaffold_extentions.dart';
 import '../../../../utils/methods/validation.dart';
-import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_form_field.dart';
 import '../../signin/screens/sign_in_screen.dart';
@@ -33,6 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _firstNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  bool _isIndicate = false;
 
   @override
   void dispose() {
@@ -49,38 +51,78 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(context, kSignUpImage),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _signUpText(),
-                  _firstNameTextField(context),
-                  _lastNameTextField(context),
-                  _emailTextField(context),
-                  _passwordTextField(context),
-                  _signUpButton(context),
-                  _bottomRichText(),
-                ],
+    return _isIndicate
+        ? const Center(
+            child: CircularProgressIndicator(color: Colors.orangeAccent),
+          )
+        : SingleChildScrollView(
+            child: SafeArea(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _signUpText(),
+                      _firstNameTextField(context),
+                      _lastNameTextField(context),
+                      _emailTextField(context),
+                      _passwordTextField(context),
+                      _signUpButton(context),
+                      _bottomRichText(),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          ).authScaffold(image: kSignUpImage, context: context);
   }
+
+  _signUpText() =>
+      Text(Languages.of(context)!.signUpSlogan, style: kSignInUpTextStyle);
+
+  _firstNameTextField(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 40.0),
+        child: CustomTextFormField(
+          hintText: Languages.of(context)!.firstName,
+          controller: _firstNameController,
+          focusNode: _firstNameFocusNode,
+          onSubmit: (String? value) {
+            fieldFocusChange(
+              context,
+              _firstNameFocusNode,
+              _lastNameFocusNode,
+            );
+          },
+          validator: validateUsername,
+          textInputType: TextInputType.text,
+        ),
+      );
+
+  _lastNameTextField(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: CustomTextFormField(
+          hintText: Languages.of(context)!.lastName,
+          controller: _lastNameController,
+          focusNode: _lastNameFocusNode,
+          onSubmit: (String? value) {
+            fieldFocusChange(
+              context,
+              _lastNameFocusNode,
+              _emailFocusNode,
+            );
+          },
+          validator: validateUsername,
+          textInputType: TextInputType.text,
+        ),
+      );
 
   Padding _emailTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomTextFormField(
-          hintText: kEmail,
+          hintText: Languages.of(context)!.email,
           controller: _emailController,
           focusNode: _emailFocusNode,
           onSubmit: (String? value) {
@@ -100,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           top: 20.0,
         ),
         child: CustomTextFormField(
-          hintText: kPassword,
+          hintText: Languages.of(context)!.password,
           controller: _passwordController,
           focusNode: _passwordFocusNode,
           onSubmit: (String? value) {},
@@ -112,9 +154,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   _signUpButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
-          label: kSignUp,
+          label: Languages.of(context)!.signUp,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              setState(() {
+                _isIndicate = true;
+              });
               final response = await AuthApi.registerUser(
                 SignUpReqModel(
                     firstname: _firstNameController.text,
@@ -152,66 +197,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               );
             },
             child: RichText(
-              text: const TextSpan(children: [
-                TextSpan(
-                  text: kAlreadyAccount,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-                TextSpan(
-                  text: kSignIn,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: Languages.of(context)!.alreadyAccount,
+                    style: kSmallTextTextStyle,
                   ),
-                ),
-              ]),
+                  TextSpan(
+                    text: Languages.of(context)!.signIn,
+                    style: kSmallBoldTextTextStyle,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-
-  _signUpText() => const Text(
-        kSignUpSlogan,
-        style: TextStyle(
-          color: Colors.orangeAccent,
-          fontSize: 30.0,
-        ),
-      );
-
-  _firstNameTextField(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 40.0),
-        child: CustomTextFormField(
-          hintText: kFirstName,
-          controller: _firstNameController,
-          focusNode: _firstNameFocusNode,
-          onSubmit: (String? value) {
-            fieldFocusChange(
-              context,
-              _firstNameFocusNode,
-              _lastNameFocusNode,
-            );
-          },
-          validator: validateUsername,
-          textInputType: TextInputType.text,
-        ),
-      );
-
-  _lastNameTextField(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 20.0),
-        child: CustomTextFormField(
-          hintText: kLastName,
-          controller: _lastNameController,
-          focusNode: _lastNameFocusNode,
-          onSubmit: (String? value) {
-            fieldFocusChange(
-              context,
-              _lastNameFocusNode,
-              _emailFocusNode,
-            );
-          },
-          validator: validateUsername,
-          textInputType: TextInputType.text,
         ),
       );
 }

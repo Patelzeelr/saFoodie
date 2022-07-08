@@ -8,7 +8,6 @@ class BaseAPI {
       {required T body,
       required String url,
       bool isHeaderIncluded = true}) async {
-    print("post body: $body");
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final headers = <String, String>{
       "Content-Type": "application/json",
@@ -16,13 +15,10 @@ class BaseAPI {
     if (isHeaderIncluded) {
       headers["token"] = _prefs.getString(token) ?? "";
     }
-    print("req header: $headers");
     try {
       final res = await http.post(Uri.parse(url), body: body, headers: headers);
-      print("post api run: ${res.body}");
       return res;
     } catch (e) {
-      print('Exception = ' + e.toString());
       throw Exception(e);
     }
   }

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:sa_foodie/src/utils/methods/show_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/recipe/recipe_api.dart';
 import '../../../base/api/url_factory.dart';
 import '../../../utils/constants/asset_constants.dart';
-import '../../../utils/constants/string_constants.dart';
+import '../../../utils/constants/style_constants.dart';
+import '../../../utils/localizations/language/languages.dart';
 import '../../../utils/methods/field_focus_change.dart';
+import '../../../utils/methods/scaffold_extentions.dart';
+import '../../../utils/methods/show_message.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_header_text_field.dart';
 import '../../../widgets/custom_shape_container.dart';
@@ -39,10 +41,16 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final _formKey = GlobalKey<FormState>();
   late UserProvider userData;
   List<DropdownMenuItem<String>> get dropdownItems {
-    List<DropdownMenuItem<String>> complexityOfItems = const [
-      DropdownMenuItem(child: Text("Easy"), value: "Easy"),
-      DropdownMenuItem(child: Text("Normal"), value: "Normal"),
-      DropdownMenuItem(child: Text("Hard"), value: "Hard"),
+    List<DropdownMenuItem<String>> complexityOfItems = [
+      DropdownMenuItem(
+          child: Text(Languages.of(context)!.easy),
+          value: Languages.of(context)!.easy),
+      DropdownMenuItem(
+          child: Text(Languages.of(context)!.normal),
+          value: Languages.of(context)!.normal),
+      DropdownMenuItem(
+          child: Text(Languages.of(context)!.hard),
+          value: Languages.of(context)!.hard),
     ];
     return complexityOfItems;
   }
@@ -110,19 +118,17 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            customShapeContainer(),
-            _deleteRecipeButton(),
-            _foodImg(),
-            _foodDetail(),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          customShapeContainer(context),
+          _deleteRecipeButton(),
+          _foodImg(),
+          _foodDetail(),
+        ],
       ),
-    );
+    ).containerScaffold(context: context);
   }
 
   _deleteRecipeButton() => GestureDetector(
@@ -133,7 +139,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           await RecipeApi.deleteRecipe(widget.recipe!.id);
           Provider.of<RecipeProvider>(context, listen: false)
               .getRecipeData(context, _id);
-          showMessage(kRecipeDeleteMessage);
+          showMessage(Languages.of(context)!.recipeDeleteMessage);
           Navigator.pop(context);
         },
         child: Padding(
@@ -197,9 +203,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               children: [
                 _addRecipeName(),
                 _addPreparationTime(),
-                _headingTitle(kAddServing),
+                _headingTitle(Languages.of(context)!.serving),
                 _servingRow(),
-                _headingTitle(kAddComplexity),
+                _headingTitle(Languages.of(context)!.complexity),
                 _complexityDropDownButton(),
                 widget.recipe != null
                     ? _updateButton(context)
@@ -214,21 +220,18 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
         child: Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: kMediumBoldTextTextStyle,
         ),
       );
 
   _addRecipeName() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _headingTitle(kAddRecipeName),
+          _headingTitle(Languages.of(context)!.recipeName),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: CustomHeaderTextField(
-              hintText: kExRecipeName,
+              hintText: Languages.of(context)!.recipeExample,
               maxLines: 1,
               controller: _recipeNameController,
               focusNode: _recipeNameFocusNode,
@@ -247,11 +250,11 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   _addPreparationTime() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _headingTitle(kAddPreparationTime),
+          _headingTitle(Languages.of(context)!.preparationTime),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: CustomHeaderTextField(
-              hintText: kExPreparationTime,
+              hintText: Languages.of(context)!.preparationTime,
               maxLines: 1,
               controller: _preparationTimeController,
               focusNode: _preparationTimeFocusNode,
@@ -316,7 +319,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   _addButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
-          label: kAddRecipeButton,
+          label: Languages.of(context)!.addRecipeButton,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               final response = await RecipeApi.addRecipe(
@@ -333,7 +336,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               if (response.code == 200) {
                 Provider.of<RecipeProvider>(context, listen: false)
                     .getRecipeData(context, _id);
-                showMessage(kRecipeAddMessage);
+                showMessage(Languages.of(context)!.recipeAddMessage);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -349,7 +352,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   _updateButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
-          label: kUpdateRecipeButton,
+          label: Languages.of(context)!.updateRecipeButton,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               final response = await RecipeApi.updateRecipe(
@@ -367,7 +370,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               if (response.code == 200) {
                 Provider.of<RecipeProvider>(context, listen: false)
                     .getRecipeData(context, _id);
-                showMessage(kRecipeUpdateMessage);
+                showMessage(Languages.of(context)!.recipeUpdateMessage);
                 Navigator.pop(context);
               } else {}
             }

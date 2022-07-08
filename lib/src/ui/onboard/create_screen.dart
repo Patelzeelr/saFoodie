@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../utils/constants/asset_constants.dart';
-import '../../utils/constants/string_constants.dart';
+import '../../utils/constants/style_constants.dart';
+import '../../utils/localizations/language/languages.dart';
+import '../../utils/methods/navigation_method.dart';
+import '../../utils/methods/scaffold_extentions.dart';
 import '../../widgets/custom_button.dart';
 import '../auth/signin/screens/sign_in_screen.dart';
-import '../auth/signup/screens/sign_up_screen.dart';
 
 class CreateScreen extends StatelessWidget {
   static const String id = "create_screen";
@@ -14,8 +16,8 @@ class CreateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return SingleChildScrollView(
+      child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -24,7 +26,7 @@ class CreateScreen extends StatelessWidget {
         ),
         child: Center(child: _glassBox(context)),
       ),
-    );
+    ).containerScaffold(context: context);
   }
 
   _glassBox(BuildContext context) => ClipRect(
@@ -49,8 +51,8 @@ class CreateScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const Image(image: AssetImage(kAppLogo)),
-                      _headingText(),
-                      _descriptionText(),
+                      _headingText(context),
+                      _descriptionText(context),
                       _createButton(context),
                       _bottomRichText(context),
                     ],
@@ -62,20 +64,17 @@ class CreateScreen extends StatelessWidget {
         ),
       );
 
-  _headingText() => const Text(
-        kAppName,
-        style: TextStyle(
-          color: Colors.orangeAccent,
-          fontSize: 30.0,
-          fontWeight: FontWeight.bold,
-        ),
+  _headingText(BuildContext context) => Text(
+        Languages.of(context)!.appName,
+        style: kAppNameTextStyle.copyWith(
+            color: Colors.orangeAccent, fontSize: 30.0),
       );
 
-  _descriptionText() => const Padding(
-        padding: EdgeInsets.only(top: 10.0),
+  _descriptionText(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 10.0),
         child: Text(
-          kDescription,
-          style: TextStyle(fontSize: 14.0),
+          Languages.of(context)!.description,
+          style: kSmallBoldTextTextStyle,
           textAlign: TextAlign.center,
         ),
       );
@@ -83,30 +82,35 @@ class CreateScreen extends StatelessWidget {
   _createButton(BuildContext context) => Padding(
         padding: const EdgeInsets.all(30.0),
         child: CustomButton(
-          label: kCreateAccountButton,
+          label: Languages.of(context)!.createAccountButton,
           onPressed: () {
-            Navigator.pushNamed(context, SignUpScreen.id);
+            Navigator.of(context).push(
+              createRoute(
+                const SignInScreen(),
+              ),
+            );
           },
         ),
       );
 
   _bottomRichText(BuildContext context) => GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, SignInScreen.id);
+          Navigator.of(context).push(
+            createRoute(
+              const SignInScreen(),
+            ),
+          );
         },
         child: RichText(
-          text: const TextSpan(
+          text: TextSpan(
             children: [
               TextSpan(
-                text: kAlreadyAccount,
-                style: TextStyle(fontSize: 14, color: Colors.black),
+                text: Languages.of(context)!.alreadyAccount,
+                style: kSmallTextTextStyle,
               ),
               TextSpan(
-                text: kSignIn,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                text: Languages.of(context)!.signIn,
+                style: kSmallBoldTextTextStyle,
               ),
             ],
           ),

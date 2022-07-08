@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:sa_foodie/src/utils/methods/show_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/auth/auth_api.dart';
 import '../../../base/api/url_factory.dart';
 import '../../../utils/constants/asset_constants.dart';
-import '../../../utils/constants/string_constants.dart';
+import '../../../utils/localizations/language/languages.dart';
 import '../../../utils/methods/field_focus_change.dart';
+import '../../../utils/methods/scaffold_extentions.dart';
+import '../../../utils/methods/show_message.dart';
 import '../../../utils/methods/validation.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_shape_clipper.dart';
@@ -83,22 +84,20 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoad
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Colors.orangeAccent,
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  _userProfileTop(),
-                  _userDetail(),
-                ],
-              ),
+    return _isLoad
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: Colors.orangeAccent,
             ),
-    );
+          )
+        : SingleChildScrollView(
+            child: Column(
+              children: [
+                _userProfileTop(),
+                _userDetail(),
+              ],
+            ),
+          ).containerScaffold(context: context);
   }
 
   Widget _userProfileTop() {
@@ -165,7 +164,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   _firstNameTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 40.0),
         child: CustomTextFormField(
-          hintText: kFirstName,
+          hintText: Languages.of(context)!.firstName,
           controller: _firstNameController,
           focusNode: _firstNameFocusNode,
           onSubmit: (String? value) {
@@ -183,7 +182,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   _lastNameTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomTextFormField(
-          hintText: kLastName,
+          hintText: Languages.of(context)!.lastName,
           controller: _lastNameController,
           focusNode: _lastNameFocusNode,
           onSubmit: (String? value) {
@@ -203,7 +202,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           top: 20.0,
         ),
         child: CustomTextFormField(
-          hintText: kPassword,
+          hintText: Languages.of(context)!.password,
           controller: _passwordController,
           focusNode: _passwordFocusNode,
           onSubmit: (String? value) {},
@@ -215,7 +214,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   _updateUserButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 30.0),
         child: CustomButton(
-          label: kUpdateButton,
+          label: Languages.of(context)!.updateUserButton,
           onPressed: () async {
             await AuthApi.updateUsers(
               userData.oneUser!.data.id,
@@ -229,7 +228,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             );
             Provider.of<UserProvider>(context, listen: false)
                 .getOneUser(context, userData.oneUser!.data.id);
-            showMessage(kUpdateUserMessage);
+            showMessage(Languages.of(context)!.updateUserMessage);
           },
         ),
       );
@@ -272,8 +271,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   _logOutAlertDialog() => showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text(kAppName),
-          content: const Text(kLogoutUserMessage),
+          title: Text(Languages.of(context)!.appName),
+          content: Text(Languages.of(context)!.logOutUserMessage),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),

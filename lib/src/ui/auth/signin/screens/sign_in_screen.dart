@@ -5,11 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../api/auth/auth_api.dart';
 import '../../../../base/api/url_factory.dart';
 import '../../../../utils/constants/asset_constants.dart';
-import '../../../../utils/constants/string_constants.dart';
+import '../../../../utils/constants/style_constants.dart';
+import '../../../../utils/localizations/language/languages.dart';
 import '../../../../utils/methods/field_focus_change.dart';
 import '../../../../utils/methods/navigation_method.dart';
+import '../../../../utils/methods/scaffold_extentions.dart';
 import '../../../../utils/methods/validation.dart';
-import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_form_field.dart';
 import '../../../dashboard/screens/custom_bottom_navigation_bar.dart';
@@ -51,42 +52,41 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(context, kSignInImage),
-      body: _isIndicate
-          ? const Center(
-              child: CircularProgressIndicator(color: Colors.orangeAccent),
-            )
-          : SingleChildScrollView(
-              child: SafeArea(
-                child: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 32.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _signInText(),
-                        _emailTextField(context),
-                        _passwordTextField(context),
-                        _forgotPasswordTextButton(),
-                        _signInButton(context),
-                        _bottomRichText(),
-                      ],
-                    ),
+    return _isIndicate
+        ? const Center(
+            child: CircularProgressIndicator(color: Colors.orangeAccent),
+          )
+        : SingleChildScrollView(
+            child: SafeArea(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _signInText(),
+                      _emailTextField(context),
+                      _passwordTextField(context),
+                      _forgotPasswordTextButton(),
+                      _signInButton(context),
+                      _bottomRichText(),
+                    ],
                   ),
                 ),
               ),
             ),
-    );
+          ).authScaffold(context: context, image: kSignInImage);
   }
+
+  _signInText() =>
+      Text(Languages.of(context)!.signInSlogan, style: kSignInUpTextStyle);
 
   Padding _emailTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 40.0),
         child: CustomTextFormField(
-          hintText: kEmail,
+          hintText: Languages.of(context)!.email,
           controller: _emailController,
           focusNode: _emailFocusNode,
           onSubmit: (String? value) {
@@ -106,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen> {
           top: 20.0,
         ),
         child: CustomTextFormField(
-          hintText: kPassword,
+          hintText: Languages.of(context)!.password,
           controller: _passwordController,
           focusNode: _passwordFocusNode,
           onSubmit: (String? value) {},
@@ -123,8 +123,8 @@ class _SignInScreenState extends State<SignInScreen> {
           alignment: Alignment.centerRight,
           child: GestureDetector(
             onTap: () {},
-            child: const Text(
-              kForgotPassword,
+            child: Text(
+              Languages.of(context)!.forgotPassword,
             ),
           ),
         ),
@@ -133,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
   _signInButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
-          label: kSignIn,
+          label: Languages.of(context)!.signIn,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               setState(() {
@@ -172,30 +172,17 @@ class _SignInScreenState extends State<SignInScreen> {
               );
             },
             child: RichText(
-              text: const TextSpan(children: [
+              text: TextSpan(children: [
                 TextSpan(
-                  text: kDoNotAccount,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                  text: Languages.of(context)!.doNotAccount,
+                  style: kSmallTextTextStyle,
                 ),
                 TextSpan(
-                  text: kSignUp,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
+                    text: Languages.of(context)!.signUp,
+                    style: kSmallBoldTextTextStyle),
               ]),
             ),
           ),
-        ),
-      );
-
-  _signInText() => const Text(
-        kSignInSlogan,
-        style: TextStyle(
-          color: Colors.orangeAccent,
-          fontSize: 30.0,
         ),
       );
 }

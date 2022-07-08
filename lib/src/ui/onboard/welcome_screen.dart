@@ -3,8 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../base/api/url_factory.dart';
 import '../../utils/constants/asset_constants.dart';
-import '../../utils/constants/string_constants.dart';
+import '../../utils/constants/style_constants.dart';
+import '../../utils/localizations/language/languages.dart';
 import '../../utils/methods/navigation_method.dart';
+import '../../utils/methods/scaffold_extentions.dart';
 import '../../widgets/custom_button.dart';
 import '../dashboard/screens/custom_bottom_navigation_bar.dart';
 import 'create_screen.dart';
@@ -20,18 +22,16 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(kStarterBackground), fit: BoxFit.cover),
-        ),
-        child: _gradientBackground(
-          _bottomWidgets(),
-        ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage(kStarterBackground), fit: BoxFit.cover),
       ),
-    );
+      child: _gradientBackground(
+        _bottomWidgets(),
+      ),
+    ).containerScaffold(context: context);
   }
 
   Container _gradientBackground(Widget widget) => Container(
@@ -48,18 +48,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Text(
-            kAppName,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 50.0,
-                fontWeight: FontWeight.bold),
+          Text(
+            Languages.of(context)!.appName,
+            style: kAppNameTextStyle,
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 20.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
             child: Text(
-              kAppSlogan,
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              Languages.of(context)!.appSlogan,
+              style: kMediumTextTextStyle.copyWith(color: Colors.white),
             ),
           ),
           Padding(
@@ -83,7 +80,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       (route) => false);
                 }
               },
-              label: kStartButton,
+              label: Languages.of(context)!.startButton,
             ),
           ),
         ],

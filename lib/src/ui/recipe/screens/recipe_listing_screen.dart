@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/api/url_factory.dart';
 import '../../../utils/constants/asset_constants.dart';
-import '../../../utils/constants/string_constants.dart';
+import '../../../utils/constants/style_constants.dart';
+import '../../../utils/localizations/language/languages.dart';
+import '../../../utils/methods/scaffold_extentions.dart';
 import '../../../widgets/custom_container_list.dart';
 import '../../../widgets/custom_shape_container.dart';
 import '../../auth/signin/model/signin_res_model.dart';
@@ -33,7 +35,6 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
     kCoffee,
     kIceCream
   ];
-  final TextEditingController _searchController = TextEditingController();
   late RecipeProvider recipeData;
   bool _isLoad = false;
 
@@ -58,94 +59,30 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoad
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Colors.orangeAccent,
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  customShapeContainer(),
-                  _heading(),
-                  _staticHorizontalImageListView(),
-                  _headingRecipe(),
-                  _recipeListView(),
-                ],
-              ),
+    return _isLoad
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: Colors.orangeAccent,
             ),
-    );
+          )
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                customShapeContainer(context),
+                _heading(),
+                _staticHorizontalImageListView(),
+                _headingRecipe(),
+                _recipeListView(),
+              ],
+            ),
+          ).containerScaffold(context: context);
   }
 
-  _heading() => const Padding(
-        padding: EdgeInsets.only(left: 8.0, top: 16.0, right: 8.0),
-        child: Text(
-          kHomeHeading,
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-
-  _searchAndFilterRow() => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _searchBar(),
-            const SizedBox(
-              width: 8.0,
-            ),
-            _filter(),
-          ],
-        ),
-      );
-
-  _searchBar() => Expanded(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 6.0,
-            horizontal: 8.0,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.20),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          child: TextField(
-            cursorColor: Colors.orangeAccent,
-            controller: _searchController,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.grey,
-                size: 34.0,
-              ),
-              hintText: 'Search For Recipe',
-              helperStyle: TextStyle(
-                color: Colors.grey,
-                fontSize: 20.0,
-              ),
-            ),
-          ),
-        ),
-      );
-
-  _filter() => Container(
-        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 18.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.20),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        child: const Icon(
-          Icons.filter_alt,
-          size: 24,
-        ),
+  _heading() => Padding(
+        padding: const EdgeInsets.only(left: 8.0, top: 16.0, right: 8.0),
+        child:
+            Text(Languages.of(context)!.homeHeading, style: kRecipeTextStyle),
       );
 
   _staticHorizontalImageListView() => CustomContainerList(
@@ -172,14 +109,11 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
         0.42,
       );
 
-  _headingRecipe() => const Padding(
-        padding: EdgeInsets.only(left: 8.0, top: 16.0, right: 8.0),
+  _headingRecipe() => Padding(
+        padding: const EdgeInsets.only(left: 8.0, top: 16.0, right: 8.0),
         child: Text(
-          kHomeRecipe,
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-          ),
+          Languages.of(context)!.homeRecipe,
+          style: kRecipeTextStyle,
         ),
       );
 
@@ -260,11 +194,8 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
                       children: [
                         Text(
                           data.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.orangeAccent,
-                          ),
+                          style: kRecipeNameTextStyle.copyWith(
+                              color: Colors.orangeAccent),
                         ),
                         Row(
                           children: [
@@ -286,7 +217,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "${data.serves} $kPeople",
+                                "${data.serves} ${Languages.of(context)!.people}",
                               ),
                             ),
                           ],
