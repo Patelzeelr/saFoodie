@@ -1,0 +1,37 @@
+const String kAppName = 'SAFoodie';
+const String kAppSlogan =
+    'Deliciously Simple \nYou can make easily at your home with the help of SAFoodie';
+const String kStartButton = 'Start Cooking';
+const String kDescription =
+    'Nutritionally balanced, easy \nto cook recipes. Quality fresh \nlocal ingridients.';
+const String kCreateAccountButton = 'Create Account';
+const String kAlreadyAccount = 'Already have an account? ';
+const String kDoNotAccount = 'Don\'t have an account? ';
+const String kSignIn = 'Sign In';
+const String kSignUp = 'Sign Up';
+const String kForgotPassword = 'Forgot Password?';
+const String kPassword = 'Password';
+const String kEmail = 'Email';
+const String kFirstName = 'First Name';
+const String kLastName = 'Last Name';
+const String kSignInSlogan = 'Welcome back to SAFoodie';
+const String kSignUpSlogan = 'Let\'s start making good meals';
+const String kBackButton = 'Back';
+const String kUpdateButton = 'Update User';
+const String kAddServing = 'Serving';
+const String kAddComplexity = 'Complexity';
+const String kAddRecipeName = 'Recipe Name';
+const String kExRecipeName = 'Ex. Tawa Paneer';
+const String kAddPreparationTime = 'Preparation Time';
+const String kExPreparationTime = 'Ex. 15 mins';
+const String kAddRecipeButton = 'Add Recipe';
+const String kUpdateRecipeButton = 'Update Recipe';
+const String kHomeHeading = 'What would you like to cook today?';
+const String kHomeRecipe = 'Recipes';
+const String kPeople = 'people';
+const String kUpdateUserMessage = 'User updated Successfully!';
+const String kLogoutUserMessage = 'Are you sure you want to logOut?';
+const String kRecipeUpdateMessage = 'Recipe Updated Successfully!';
+const String kRecipeDeleteMessage = 'Recipe Deleted Successfully!';
+const String kRecipeAddMessage = 'Recipe Added Successfully!';
+const String kWrongPasswordMessage = "Password is wrong!";

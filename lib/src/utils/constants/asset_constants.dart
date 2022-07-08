@@ -1,0 +1,15 @@
+const String splashBackground = 'assets/images/splash_screen_bg.png';
+const String kStarterBackground = 'assets/images/starter-image.jpg';
+const String kCreateBackground = 'assets/images/login-background.png';
+const String kAppLogo = 'assets/images/applogo.png';
+const String kSignInImage = 'assets/images/one.jpg';
+const String kSignUpImage = 'assets/images/two.jpg';
+const String kStarter = 'assets/images/starter.jpeg';
+const String kMenu = 'assets/images/menu_one.jpeg';
+const String kSalad = 'assets/images/salad_one.jpeg';
+const String kCoffee = 'assets/images/coffee.jpeg';
+const String kMocktail = 'assets/images/mocktail.jpeg';
+const String kDesert = 'assets/images/desert.jpeg';
+const String kCake = 'assets/images/cake.jpeg';
+const String kIceCream = 'assets/images/icecream.png';
+const String kAvatar = 'assets/images/avatar7.png';
