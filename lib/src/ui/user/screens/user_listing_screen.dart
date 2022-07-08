@@ -15,7 +15,7 @@ class UserListingScreen extends StatefulWidget {
 }
 
 class _UserListingScreenState extends State<UserListingScreen> {
-  late UserProvider userData;
+  late UserProvider _userData;
 
   _loadAllUsers() async {
     await Provider.of<UserProvider>(context, listen: false)
@@ -25,16 +25,16 @@ class _UserListingScreenState extends State<UserListingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    userData = Provider.of<UserProvider>(context);
+    _userData = Provider.of<UserProvider>(context);
     _loadAllUsers();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: userData.user?.data.length ?? 0,
+      itemCount: _userData.user?.data.length ?? 0,
       itemBuilder: (BuildContext context, int index) {
-        final data = userData.user!.data[index];
+        final data = _userData.user!.data[index];
         return Container(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: _userCardView(data),

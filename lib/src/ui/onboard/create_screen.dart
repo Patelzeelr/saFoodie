@@ -9,6 +9,7 @@ import '../../utils/methods/navigation_method.dart';
 import '../../utils/methods/scaffold_extentions.dart';
 import '../../widgets/custom_button.dart';
 import '../auth/signin/screens/sign_in_screen.dart';
+import '../auth/signup/screens/sign_up_screen.dart';
 
 class CreateScreen extends StatelessWidget {
   static const String id = "create_screen";
@@ -86,7 +87,7 @@ class CreateScreen extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               createRoute(
-                const SignInScreen(),
+                const SignUpScreen(),
               ),
             );
           },

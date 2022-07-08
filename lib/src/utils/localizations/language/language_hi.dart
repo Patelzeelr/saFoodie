@@ -122,4 +122,10 @@ class LanguageHi extends Languages {
 
   @override
   String get bottomUsers => 'उपयोगकर्ताओं';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get logOut => 'LogOut';
 }

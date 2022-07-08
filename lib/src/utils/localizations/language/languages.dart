@@ -45,4 +45,6 @@ abstract class Languages {
   String get bottomAddRecipe;
   String get bottomUsers;
   String get bottomUser;
+  String get cancel;
+  String get logOut;
 }

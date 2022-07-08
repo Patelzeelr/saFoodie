@@ -35,7 +35,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
     kCoffee,
     kIceCream
   ];
-  late RecipeProvider recipeData;
+  late RecipeProvider _recipeData;
   bool _isLoad = false;
 
   _loadRecipe() async {
@@ -43,9 +43,9 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
       _isLoad = true;
     });
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    recipeData = Provider.of<RecipeProvider>(context, listen: false);
+    _recipeData = Provider.of<RecipeProvider>(context, listen: false);
     int? userId = _prefs.getInt(id);
-    await recipeData.getRecipeData(context, userId!);
+    await _recipeData.getRecipeData(context, userId!);
     setState(() {
       _isLoad = false;
     });
@@ -118,13 +118,16 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
       );
 
   _recipeListView() => Consumer<RecipeProvider>(
-        builder: (context, recipeData, child) => ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: recipeData.recipe?.data.length ?? 0,
-          itemBuilder: (context, index) {
-            return _customCard(recipeData.recipe!.data[index]);
-          },
+        builder: (context, recipeData, child) => Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: recipeData.recipe?.data.length ?? 0,
+            itemBuilder: (context, index) {
+              return _customCard(recipeData.recipe!.data[index]);
+            },
+          ),
         ),
       );
 

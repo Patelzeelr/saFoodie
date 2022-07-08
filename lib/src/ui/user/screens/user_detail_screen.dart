@@ -30,8 +30,8 @@ class UserDetailScreen extends StatefulWidget {
 }
 
 class _UserDetailScreenState extends State<UserDetailScreen> {
-  final double clipHeight = 280;
-  final double profileHeight = 144;
+  final double _clipHeight = 280;
+  final double _profileHeight = 144;
 
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -40,7 +40,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   final FocusNode _firstNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
   late bool _isElevated = false;
-  late UserProvider userData;
+  late UserProvider _userData;
   bool _isLoad = false;
   final _toast = FToast();
 
@@ -49,14 +49,14 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       _isLoad = true;
     });
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    userData = Provider.of<UserProvider>(context, listen: false);
+    _userData = Provider.of<UserProvider>(context, listen: false);
     int? userId = _prefs.getInt(id);
-    await userData.getOneUser(context, userId!);
+    await _userData.getOneUser(context, userId!);
     setState(() {
-      if (userData.oneUser?.data.id != null) {
-        _firstNameController.text = userData.oneUser!.data.firstname;
-        _lastNameController.text = userData.oneUser!.data.lastname;
-        _passwordController.text = userData.oneUser!.data.password;
+      if (_userData.oneUser?.data.id != null) {
+        _firstNameController.text = _userData.oneUser!.data.firstname;
+        _lastNameController.text = _userData.oneUser!.data.lastname;
+        _passwordController.text = _userData.oneUser!.data.password;
       }
     });
     setState(() {
@@ -101,14 +101,14 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   }
 
   Widget _userProfileTop() {
-    final top = clipHeight - profileHeight / 1.5;
+    final top = _clipHeight - _profileHeight / 1.5;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
         Container(
           margin: EdgeInsets.only(
-            bottom: profileHeight / 3,
+            bottom: _profileHeight / 3,
           ),
           child: _clipBackground(context),
         ),
@@ -123,7 +123,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   _clipBackground(BuildContext context) => ClipPath(
         clipper: CustomShapeClipper(),
         child: Container(
-          height: clipHeight,
+          height: _clipHeight,
           decoration: const BoxDecoration(
             color: Colors.orangeAccent,
           ),
@@ -138,7 +138,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       );
 
   _profileImage() => CircleAvatar(
-        radius: profileHeight / 2,
+        radius: _profileHeight / 2,
         backgroundColor: Colors.black54,
         child: const CircleAvatar(
           radius: 68,
@@ -217,17 +217,17 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           label: Languages.of(context)!.updateUserButton,
           onPressed: () async {
             await AuthApi.updateUsers(
-              userData.oneUser!.data.id,
+              _userData.oneUser!.data.id,
               SignUpReqModel(
                   firstname: _firstNameController.text,
                   lastname: _lastNameController.text,
-                  email: userData.oneUser!.data.email,
+                  email: _userData.oneUser!.data.email,
                   password: _passwordController.text,
-                  token: userData.oneUser!.data.token,
-                  isActive: userData.oneUser!.data.isActive),
+                  token: _userData.oneUser!.data.token,
+                  isActive: _userData.oneUser!.data.isActive),
             );
             Provider.of<UserProvider>(context, listen: false)
-                .getOneUser(context, userData.oneUser!.data.id);
+                .getOneUser(context, _userData.oneUser!.data.id);
             showMessage(Languages.of(context)!.updateUserMessage);
           },
         ),
@@ -275,13 +275,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           content: Text(Languages.of(context)!.logOutUserMessage),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(Languages.of(context)!.cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: const Text('LogOut'),
+              child: Text(Languages.of(context)!.logOut),
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.remove("token");

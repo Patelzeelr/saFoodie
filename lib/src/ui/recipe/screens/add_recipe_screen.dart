@@ -39,8 +39,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final FocusNode _recipeNameFocusNode = FocusNode();
   final FocusNode _preparationTimeFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
-  late UserProvider userData;
-  List<DropdownMenuItem<String>> get dropdownItems {
+  late UserProvider _userData;
+  List<DropdownMenuItem<String>> get _dropdownItems {
     List<DropdownMenuItem<String>> complexityOfItems = [
       DropdownMenuItem(
           child: Text(Languages.of(context)!.easy),
@@ -55,9 +55,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     return complexityOfItems;
   }
 
-  String? selectedValue = "Easy";
+  String? _selectedValue = "Easy";
   int _count = 0;
-  final double profileHeight = 144;
+  final double _profileHeight = 144;
   String _firstName = "";
   String _lastName = "";
   int _id = 0;
@@ -78,14 +78,14 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   _loadUser() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    userData = Provider.of<UserProvider>(context, listen: false);
+    _userData = Provider.of<UserProvider>(context, listen: false);
     int? userId = _prefs.getInt(id);
-    await userData.getOneUser(context, userId!);
+    await _userData.getOneUser(context, userId!);
     setState(() {
-      if (userData.oneUser?.data.id != null) {
-        _firstName = userData.oneUser!.data.firstname;
-        _lastName = userData.oneUser!.data.lastname;
-        _id = userData.oneUser!.data.id;
+      if (_userData.oneUser?.data.id != null) {
+        _firstName = _userData.oneUser!.data.firstname;
+        _lastName = _userData.oneUser!.data.lastname;
+        _id = _userData.oneUser!.data.id;
       }
     });
   }
@@ -98,7 +98,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       _recipeNameController.text = widget.recipe!.name;
       _count = int.parse(widget.recipe!.serves);
       _preparationTimeController.text = widget.recipe!.preparationTime;
-      selectedValue = widget.recipe!.complexity;
+      _selectedValue = widget.recipe!.complexity;
     } else {
       _recipeNameController.text = "";
       _count = 0;
@@ -299,7 +299,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       );
 
   _complexityDropDownButton() => DropdownButtonFormField(
-        items: dropdownItems,
+        items: _dropdownItems,
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.orangeAccent, width: 1.0)),
@@ -310,10 +310,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         ),
         onChanged: (String? value) {
           setState(() {
-            selectedValue = value!;
+            _selectedValue = value!;
           });
         },
-        value: selectedValue,
+        value: _selectedValue,
       );
 
   _addButton(BuildContext context) => Padding(
@@ -328,7 +328,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                     photo: '$image$kIceCream',
                     preparationTime: _preparationTimeController.text,
                     serves: _count.toString(),
-                    complexity: selectedValue!,
+                    complexity: _selectedValue!,
                     firstName: _firstName,
                     lastName: _lastName,
                     userId: _id),
@@ -362,7 +362,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                     photo: '$image$kIceCream',
                     preparationTime: _preparationTimeController.text,
                     serves: _count.toString(),
-                    complexity: selectedValue!,
+                    complexity: _selectedValue!,
                     firstName: _firstName,
                     lastName: _lastName,
                     userId: _id),
@@ -413,7 +413,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   _imageCircleAvatar() => Align(
         alignment: Alignment.center,
         child: CircleAvatar(
-          radius: profileHeight / 2,
+          radius: _profileHeight / 2,
           backgroundColor: Colors.orangeAccent,
           child: const CircleAvatar(
             radius: 68,

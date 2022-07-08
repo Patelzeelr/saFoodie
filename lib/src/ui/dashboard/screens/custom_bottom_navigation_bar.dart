@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sa_foodie/src/utils/localizations/language/languages.dart';
 
+import '../../../utils/localizations/language/languages.dart';
 import '../../auth/signin/model/signin_res_model.dart';
 import '../../recipe/screens/add_recipe_screen.dart';
 import '../../recipe/screens/recipe_listing_screen.dart';

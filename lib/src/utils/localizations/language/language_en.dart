@@ -122,4 +122,10 @@ class LanguageEn extends Languages {
 
   @override
   String get bottomUsers => 'Users';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get logOut => 'LogOut';
 }
