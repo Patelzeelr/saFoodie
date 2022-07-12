@@ -10,10 +10,7 @@ const allRecipe = baseUrl + "recipes/feeds/";
 const addRecipes = baseUrl + "/recipes/";
 const updateRecipes = baseUrl + "recipes/";
 const deleteRecipes = baseUrl + "recipes/";
-const addImages = baseUrl + "/recipes/add-update-recipe-photo";
-const image =
-    "http://192.168.2.65:4321/api/var/sites/iosbaseprojectapi/iosbaseprojectapi/dist/uploads/";
+const addImages = baseUrl + "recipes/add-update-recipe-photo";
 
 const token = "token";
 const id = "id";
-const password = "password";

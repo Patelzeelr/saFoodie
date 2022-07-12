@@ -50,7 +50,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         focusNode: widget.focusNode,
         keyboardType: widget.textInputType,
         cursorColor: Colors.orangeAccent,
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black),
         obscureText: _isObscureText(),
         decoration: InputDecoration(
           hintText: widget.hintText,

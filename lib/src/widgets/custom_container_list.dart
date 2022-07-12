@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class CustomContainerList extends StatelessWidget {
-  CustomContainerList(this.list, this.width, this.height);
+  const CustomContainerList(this.list, this.width, this.height, {Key? key})
+      : super(key: key);
 
   final Widget list;
   final double width;

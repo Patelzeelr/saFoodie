@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../api/auth/auth_api.dart';
-import '../../../../base/api/url_factory.dart';
 import '../../../../utils/constants/asset_constants.dart';
 import '../../../../utils/constants/style_constants.dart';
 import '../../../../utils/localizations/language/languages.dart';
@@ -170,9 +168,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     isActive: true),
               );
               if (response.code == 200) {
-                SharedPreferences _prefs =
-                    await SharedPreferences.getInstance();
-                _prefs.setString(password, response.data.password);
                 Navigator.of(context).pushAndRemoveUntil(
                     createRoute(
                       const SignInScreen(),

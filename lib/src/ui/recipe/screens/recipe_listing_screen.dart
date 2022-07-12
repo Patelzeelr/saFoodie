@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,6 +134,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
 
   _customCard(Datum data) => GestureDetector(
         onTap: () {
+          debugPrint("image: $baseUrl${data.photo}");
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -144,93 +146,108 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
           height: 200,
           child: Stack(
             children: [
-              Positioned(
-                top: 35,
-                left: 20,
-                child: Material(
-                  child: Container(
-                    height: 140.0,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(0.0),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              offset: const Offset(-10.0, 10.0),
-                              blurRadius: 20.0,
-                              spreadRadius: 4.0),
-                        ]),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 30,
-                child: Card(
-                  elevation: 10.0,
-                  shadowColor: Colors.grey.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Container(
-                    height: 150,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: const DecorationImage(
-                          fit: BoxFit.fill, image: AssetImage(kIceCream)),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 45,
-                left: 130,
-                child: SizedBox(
-                  height: 150,
-                  width: 180,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.name,
-                          style: kRecipeNameTextStyle.copyWith(
-                              color: Colors.orangeAccent),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.watch_later_outlined),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                data.preparationTime,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(
-                          color: Colors.orangeAccent,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.restaurant_menu_outlined),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "${data.serves} ${Languages.of(context)!.people}",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              _backCard(),
+              _recipeImage(data),
+              _recipeDetail(data),
             ],
+          ),
+        ),
+      );
+
+  _backCard() => Positioned(
+        top: 35,
+        left: 20,
+        child: Material(
+          child: Container(
+            height: 140.0,
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(0.0),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      offset: const Offset(-10.0, 10.0),
+                      blurRadius: 20.0,
+                      spreadRadius: 4.0),
+                ]),
+          ),
+        ),
+      );
+
+  _recipeImage(Datum data) => Positioned(
+        top: 0,
+        left: 30,
+        child: Card(
+          elevation: 10.0,
+          shadowColor: Colors.grey.withOpacity(0.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: CachedNetworkImage(
+            height: 150,
+            width: 100,
+            imageUrl: data.photo,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    colorFilter: const ColorFilter.mode(
+                        Colors.red, BlendMode.colorBurn)),
+              ),
+            ),
+            placeholder: (context, url) => const CircularProgressIndicator(
+              color: Colors.orangeAccent,
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+        ),
+      );
+
+  _recipeDetail(Datum data) => Positioned(
+        top: 45,
+        left: 130,
+        child: SizedBox(
+          height: 150,
+          width: 180,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.name,
+                  style:
+                      kRecipeNameTextStyle.copyWith(color: Colors.orangeAccent),
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.watch_later_outlined),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        data.preparationTime,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(
+                  color: Colors.orangeAccent,
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.restaurant_menu_outlined),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "${data.serves} ${Languages.of(context)!.people}",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );

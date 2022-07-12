@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/recipe/recipe_api.dart';
 import '../../../base/api/url_factory.dart';
-import '../../../utils/constants/asset_constants.dart';
 import '../../../utils/constants/style_constants.dart';
 import '../../../utils/localizations/language/languages.dart';
 import '../../../utils/methods/field_focus_change.dart';
@@ -63,6 +67,12 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   int _id = 0;
   bool _isElevated = false;
   final _toast = FToast();
+  String imagePath = "";
+  String _token = "";
+  late File imageTemp;
+  final String uploadUrl = addImages;
+  File? image;
+  int _recipeId = 0;
 
   _add() {
     setState(() {
@@ -86,8 +96,46 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         _firstName = _userData.oneUser!.data.firstname;
         _lastName = _userData.oneUser!.data.lastname;
         _id = _userData.oneUser!.data.id;
+        _token = _userData.oneUser!.data.token;
       }
     });
+  }
+
+  uploadFileToServer(int id, File imagePath) async {
+    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
+    request.fields['recipeId'] = id.toInt().toString();
+    final headers = {
+      'Accept': '*/*',
+      'Content-Type': 'multipart/form-data',
+      'token': _token,
+    };
+    request.headers.addAll(headers);
+    request.files.add(
+      await http.MultipartFile.fromPath('photo', imagePath.path,
+          contentType: MediaType('image', 'jpg')),
+    );
+    request.send().then((response) {
+      http.Response.fromStream(response).then((onValue) {
+        try {
+          debugPrint('statusCode of response: ${response.statusCode}');
+          debugPrint(onValue.body);
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      });
+    });
+  }
+
+  Future _pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+    } catch (e) {
+      debugPrint("error: $e");
+    }
   }
 
   @override
@@ -99,6 +147,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       _count = int.parse(widget.recipe!.serves);
       _preparationTimeController.text = widget.recipe!.preparationTime;
       _selectedValue = widget.recipe!.complexity;
+      _recipeId = widget.recipe!.id;
+      image = File(widget.recipe!.photo);
     } else {
       _recipeNameController.text = "";
       _count = 0;
@@ -325,7 +375,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               final response = await RecipeApi.addRecipe(
                 AddRecipeReqModel(
                     name: _recipeNameController.text,
-                    photo: '$image$kIceCream',
+                    photo: '$image',
                     preparationTime: _preparationTimeController.text,
                     serves: _count.toString(),
                     complexity: _selectedValue!,
@@ -359,7 +409,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 widget.recipe!.id,
                 AddRecipeReqModel(
                     name: _recipeNameController.text,
-                    photo: '$image$kIceCream',
+                    photo: image!.path.toString(),
                     preparationTime: _preparationTimeController.text,
                     serves: _count.toString(),
                     complexity: _selectedValue!,
@@ -412,13 +462,43 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   _imageCircleAvatar() => Align(
         alignment: Alignment.center,
-        child: CircleAvatar(
-          radius: _profileHeight / 2,
-          backgroundColor: Colors.orangeAccent,
-          child: const CircleAvatar(
-            radius: 68,
-            backgroundImage: AssetImage(kIceCream),
-            backgroundColor: Colors.white,
+        child: GestureDetector(
+          onTap: () {
+            _pickImage();
+          },
+          child: CircleAvatar(
+            radius: _profileHeight / 2,
+            backgroundColor: Colors.orangeAccent,
+            child: CircleAvatar(
+              radius: 68,
+              backgroundImage: image != null
+                  ? FileImage(image!) as ImageProvider
+                  : const NetworkImage(
+                      "https://img.taste.com.au/ig8X0QdN/w643-h428-cfill-q90/taste/2016/11/deep-dish-supreme-pizza-101683-1.jpeg"),
+              backgroundColor: Colors.white,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  height: 46,
+                  width: 46,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.orangeAccent,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.upload,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      var res = await uploadFileToServer(_recipeId, image!);
+                      debugPrint("response: $res");
+                    },
+                  ),
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
           ),
         ),
       );
