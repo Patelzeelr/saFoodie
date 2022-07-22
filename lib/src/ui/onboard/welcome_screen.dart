@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../base/api/url_factory.dart';
 import '../../utils/constants/asset_constants.dart';
+import '../../utils/constants/color_constants.dart';
 import '../../utils/constants/style_constants.dart';
 import '../../utils/localizations/language/languages.dart';
-import '../../utils/methods/navigation_method.dart';
+import '../../utils/methods/common_method.dart';
 import '../../utils/methods/scaffold_extentions.dart';
 import '../../widgets/custom_button.dart';
 import '../dashboard/screens/custom_bottom_navigation_bar.dart';
@@ -56,33 +57,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             padding: const EdgeInsets.only(top: 20.0),
             child: Text(
               Languages.of(context)!.appSlogan,
-              style: kMediumTextTextStyle.copyWith(color: Colors.white),
+              style: kMediumTextTextStyle.copyWith(color: kWhite),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 100.0),
             child: CustomButton(
-              onPressed: () async {
-                SharedPreferences _prefs =
-                    await SharedPreferences.getInstance();
-                String? authToken = _prefs.getString(token);
-                if (authToken != null) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      createRoute(
-                        const CustomBottomNavigation(),
-                      ),
-                      (route) => false);
-                } else {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      createRoute(
-                        const CreateScreen(),
-                      ),
-                      (route) => false);
-                }
+              onPressed: () {
+                _welcomeUser();
               },
               label: Languages.of(context)!.startButton,
             ),
           ),
         ],
       );
+  _welcomeUser() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String? authToken = _prefs.getString(token);
+    if (authToken != null) {
+      Navigator.of(context).pushAndRemoveUntil(
+          createRoute(
+            const CustomBottomNavigation(),
+          ),
+          (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          createRoute(
+            const CreateScreen(),
+          ),
+          (route) => false);
+    }
+  }
 }

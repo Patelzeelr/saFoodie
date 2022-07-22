@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/constants/color_constants.dart';
 import '../../../utils/localizations/language/languages.dart';
 import '../../auth/signin/model/signin_res_model.dart';
 import '../../recipe/screens/add_recipe_screen.dart';
@@ -58,8 +59,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(30), topLeft: Radius.circular(30)),
           boxShadow: [
-            BoxShadow(
-                color: Colors.orangeAccent, spreadRadius: 0, blurRadius: 5),
+            BoxShadow(color: kOrange, spreadRadius: 0, blurRadius: 5),
           ],
         ),
         child: ClipRRect(
@@ -87,8 +87,8 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
               ),
             ],
             currentIndex: _selectedIndex,
-            unselectedItemColor: Colors.grey,
-            selectedItemColor: Colors.orangeAccent,
+            unselectedItemColor: kGrey,
+            selectedItemColor: kOrange,
             onTap: _onItemTapped,
           ),
         ),

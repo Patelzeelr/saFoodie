@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/recipe/recipe_api.dart';
 import '../../../base/api/url_factory.dart';
+import '../../../utils/constants/asset_constants.dart';
+import '../../../utils/constants/color_constants.dart';
 import '../../../utils/constants/style_constants.dart';
 import '../../../utils/localizations/language/languages.dart';
-import '../../../utils/methods/field_focus_change.dart';
+import '../../../utils/methods/common_method.dart';
 import '../../../utils/methods/scaffold_extentions.dart';
-import '../../../utils/methods/show_message.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_header_text_field.dart';
 import '../../../widgets/custom_shape_container.dart';
@@ -44,6 +44,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final FocusNode _preparationTimeFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   late UserProvider _userData;
+
   List<DropdownMenuItem<String>> get _dropdownItems {
     List<DropdownMenuItem<String>> complexityOfItems = [
       DropdownMenuItem(
@@ -126,18 +127,6 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     });
   }
 
-  Future _pickImage() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-
-      imageTemp = File(image.path);
-      setState(() => this.image = imageTemp);
-    } catch (e) {
-      debugPrint("error: $e");
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -172,8 +161,21 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          customShapeContainer(context),
-          _deleteRecipeButton(),
+          Stack(
+            children: [
+              customShapeContainer(context),
+              if (widget.recipe != null)
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: kWhite,
+                    )),
+            ],
+          ),
+          if (widget.recipe != null) _deleteRecipeButton(),
           _foodImg(),
           _foodDetail(),
         ],
@@ -182,15 +184,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   }
 
   _deleteRecipeButton() => GestureDetector(
-        onTap: () async {
-          setState(() {
-            _isElevated = !_isElevated;
-          });
-          await RecipeApi.deleteRecipe(widget.recipe!.id);
-          Provider.of<RecipeProvider>(context, listen: false)
-              .getRecipeData(context, _id);
-          showMessage(Languages.of(context)!.recipeDeleteMessage);
-          Navigator.pop(context);
+        onTap: () {
+          _deleteRecipe();
         },
         child: Padding(
           padding: const EdgeInsets.only(right: 16.0),
@@ -201,18 +196,18 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               height: 50,
               width: 50,
               decoration: BoxDecoration(
-                color: Colors.orangeAccent,
+                color: kOrange,
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: _isElevated
                     ? [
                         const BoxShadow(
-                          color: Colors.black26,
+                          color: kLightBlack,
                           offset: Offset(4, 4),
                           blurRadius: 15,
                           spreadRadius: 1,
                         ),
                         const BoxShadow(
-                          color: Colors.black26,
+                          color: kLightBlack,
                           offset: Offset(-4, -4),
                           blurRadius: 15,
                           spreadRadius: 1,
@@ -226,6 +221,17 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         ),
       );
 
+  _deleteRecipe() async {
+    setState(() {
+      _isElevated = !_isElevated;
+    });
+    await RecipeApi.deleteRecipe(widget.recipe!.id);
+    Provider.of<RecipeProvider>(context, listen: false)
+        .getRecipeData(context, _id);
+    showMessage(Languages.of(context)!.recipeDeleteMessage);
+    Navigator.pop(context);
+  }
+
   _foodImg() => SizedBox(
         height: 250,
         child: Stack(
@@ -238,10 +244,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   _foodDetail() => Container(
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: kWhite,
           border: Border(
-            left: BorderSide(color: Colors.orangeAccent, width: 2),
-            right: BorderSide(color: Colors.orangeAccent, width: 2),
+            left: BorderSide(color: kOrange, width: 2),
+            right: BorderSide(color: kOrange, width: 2),
           ),
         ),
         child: Padding(
@@ -324,8 +330,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               child: FloatingActionButton(
                 heroTag: "btn1",
                 onPressed: _minus,
-                backgroundColor: Colors.orangeAccent,
-                child: const Icon(Icons.remove, color: Colors.black),
+                backgroundColor: kOrange,
+                child: const Icon(Icons.remove, color: kBlack),
               ),
             ),
           ),
@@ -337,10 +343,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               child: FloatingActionButton(
                 onPressed: _add,
                 heroTag: "btn2",
-                backgroundColor: Colors.orangeAccent,
+                backgroundColor: kOrange,
                 child: const Icon(
                   Icons.add,
-                  color: Colors.black,
+                  color: kBlack,
                 ),
               ),
             ),
@@ -352,11 +358,11 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         items: _dropdownItems,
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orangeAccent, width: 1.0)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orangeAccent)),
+              borderSide: BorderSide(color: kOrange, width: 1.0)),
+          focusedBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: kOrange)),
           border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orangeAccent, width: 1.0)),
+              borderSide: BorderSide(color: kOrange, width: 1.0)),
         ),
         onChanged: (String? value) {
           setState(() {
@@ -370,63 +376,71 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
           label: Languages.of(context)!.addRecipeButton,
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              final response = await RecipeApi.addRecipe(
-                AddRecipeReqModel(
-                    name: _recipeNameController.text,
-                    photo: '$image',
-                    preparationTime: _preparationTimeController.text,
-                    serves: _count.toString(),
-                    complexity: _selectedValue!,
-                    firstName: _firstName,
-                    lastName: _lastName,
-                    userId: _id),
-              );
-              if (response.code == 200) {
-                Provider.of<RecipeProvider>(context, listen: false)
-                    .getRecipeData(context, _id);
-                showMessage(Languages.of(context)!.recipeAddMessage);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CustomBottomNavigation(),
-                  ),
-                );
-              } else {}
-            }
+          onPressed: () {
+            _addRecipe();
           },
         ),
       );
+
+  _addRecipe() async {
+    if (_formKey.currentState!.validate()) {
+      final response = await RecipeApi.addRecipe(
+        AddRecipeReqModel(
+            name: _recipeNameController.text,
+            photo: '$image',
+            preparationTime: _preparationTimeController.text,
+            serves: _count.toString(),
+            complexity: _selectedValue!,
+            firstName: _firstName,
+            lastName: _lastName,
+            userId: _id),
+      );
+      if (response.code == 200) {
+        Provider.of<RecipeProvider>(context, listen: false)
+            .getRecipeData(context, _id);
+        showMessage(Languages.of(context)!.recipeAddMessage);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CustomBottomNavigation(),
+          ),
+        );
+      } else {}
+    }
+  }
 
   _updateButton(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
           label: Languages.of(context)!.updateRecipeButton,
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              final response = await RecipeApi.updateRecipe(
-                widget.recipe!.id,
-                AddRecipeReqModel(
-                    name: _recipeNameController.text,
-                    photo: image!.path.toString(),
-                    preparationTime: _preparationTimeController.text,
-                    serves: _count.toString(),
-                    complexity: _selectedValue!,
-                    firstName: _firstName,
-                    lastName: _lastName,
-                    userId: _id),
-              );
-              if (response.code == 200) {
-                Provider.of<RecipeProvider>(context, listen: false)
-                    .getRecipeData(context, _id);
-                showMessage(Languages.of(context)!.recipeUpdateMessage);
-                Navigator.pop(context);
-              } else {}
-            }
+          onPressed: () {
+            _updateRecipe();
           },
         ),
       );
+
+  _updateRecipe() async {
+    if (_formKey.currentState!.validate()) {
+      final response = await RecipeApi.updateRecipe(
+        widget.recipe!.id,
+        AddRecipeReqModel(
+            name: _recipeNameController.text,
+            photo: image!.path.toString(),
+            preparationTime: _preparationTimeController.text,
+            serves: _count.toString(),
+            complexity: _selectedValue!,
+            firstName: _firstName,
+            lastName: _lastName,
+            userId: _id),
+      );
+      if (response.code == 200) {
+        Provider.of<RecipeProvider>(context, listen: false)
+            .getRecipeData(context, _id);
+        showMessage(Languages.of(context)!.recipeUpdateMessage);
+        Navigator.pop(context);
+      } else {}
+    }
+  }
 
   _imageContainer() => Column(
         children: [
@@ -438,7 +452,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             flex: 1,
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.orangeAccent,
+                color: kOrange,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
@@ -448,7 +462,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 margin:
                     const EdgeInsetsDirectional.only(start: 2, end: 2, top: 2),
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: kWhite,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(13.0),
                     topRight: Radius.circular(13.0),
@@ -462,43 +476,13 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   _imageCircleAvatar() => Align(
         alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () {
-            _pickImage();
-          },
-          child: CircleAvatar(
-            radius: _profileHeight / 2,
-            backgroundColor: Colors.orangeAccent,
-            child: CircleAvatar(
-              radius: 68,
-              backgroundImage: image != null
-                  ? FileImage(image!) as ImageProvider
-                  : const NetworkImage(
-                      "https://img.taste.com.au/ig8X0QdN/w643-h428-cfill-q90/taste/2016/11/deep-dish-supreme-pizza-101683-1.jpeg"),
-              backgroundColor: Colors.white,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  height: 46,
-                  width: 46,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.orangeAccent,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.upload,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      var res = await uploadFileToServer(_recipeId, image!);
-                      debugPrint("response: $res");
-                    },
-                  ),
-                  alignment: Alignment.center,
-                ),
-              ),
-            ),
+        child: CircleAvatar(
+          radius: _profileHeight / 2,
+          backgroundColor: kOrange,
+          child: const CircleAvatar(
+            radius: 68,
+            backgroundImage: AssetImage(kMenu),
+            backgroundColor: kWhite,
           ),
         ),
       );

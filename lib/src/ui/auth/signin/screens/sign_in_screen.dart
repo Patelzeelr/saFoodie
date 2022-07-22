@@ -5,10 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../api/auth/auth_api.dart';
 import '../../../../base/api/url_factory.dart';
 import '../../../../utils/constants/asset_constants.dart';
+import '../../../../utils/constants/color_constants.dart';
 import '../../../../utils/constants/style_constants.dart';
 import '../../../../utils/localizations/language/languages.dart';
-import '../../../../utils/methods/field_focus_change.dart';
-import '../../../../utils/methods/navigation_method.dart';
+import '../../../../utils/methods/common_method.dart';
 import '../../../../utils/methods/scaffold_extentions.dart';
 import '../../../../utils/methods/validation.dart';
 import '../../../../widgets/custom_button.dart';
@@ -54,7 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return _isIndicate
         ? const Center(
-            child: CircularProgressIndicator(color: Colors.orangeAccent),
+            child: CircularProgressIndicator(color: kOrange),
           )
         : SingleChildScrollView(
             child: SafeArea(
@@ -134,27 +134,8 @@ class _SignInScreenState extends State<SignInScreen> {
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
           label: Languages.of(context)!.signIn,
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              setState(() {
-                _isIndicate = true;
-              });
-              await AuthApi.loginUser(
-                SignInReqModel(
-                    email: _emailController.text,
-                    password: _passwordController.text),
-              ).then((value) async {
-                SharedPreferences _prefs =
-                    await SharedPreferences.getInstance();
-                _prefs.setString(token, value.data.token);
-                _prefs.setInt(id, value.data.id);
-                Navigator.of(context).pushAndRemoveUntil(
-                    createRoute(
-                      const CustomBottomNavigation(),
-                    ),
-                    (route) => false);
-              });
-            }
+          onPressed: () {
+            _signInUser();
           },
         ),
       );
@@ -172,17 +153,40 @@ class _SignInScreenState extends State<SignInScreen> {
               );
             },
             child: RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                  text: Languages.of(context)!.doNotAccount,
-                  style: kSmallTextTextStyle,
-                ),
-                TextSpan(
-                    text: Languages.of(context)!.signUp,
-                    style: kSmallBoldTextTextStyle),
-              ]),
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: Languages.of(context)!.doNotAccount,
+                    style: kSmallTextTextStyle,
+                  ),
+                  TextSpan(
+                      text: Languages.of(context)!.signUp,
+                      style: kSmallBoldTextTextStyle),
+                ],
+              ),
             ),
           ),
         ),
       );
+
+  _signInUser() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isIndicate = true;
+      });
+      await AuthApi.loginUser(
+        SignInReqModel(
+            email: _emailController.text, password: _passwordController.text),
+      ).then((value) async {
+        SharedPreferences _prefs = await SharedPreferences.getInstance();
+        _prefs.setString(token, value.data.token);
+        _prefs.setInt(id, value.data.id);
+        Navigator.of(context).pushAndRemoveUntil(
+            createRoute(
+              const CustomBottomNavigation(),
+            ),
+            (route) => false);
+      });
+    }
+  }
 }

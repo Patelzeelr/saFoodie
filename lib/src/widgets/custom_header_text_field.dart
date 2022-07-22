@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/constants/color_constants.dart';
+
 class CustomHeaderTextField extends StatelessWidget {
   final String hintText;
   final int maxLines;
@@ -25,21 +27,21 @@ class CustomHeaderTextField extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
-        border: Border.all(color: Colors.orangeAccent, width: 1.5),
+        border: Border.all(color: kOrange, width: 1.5),
       ),
       child: TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         focusNode: focusNode,
         controller: controller,
         validator: validator,
-        cursorColor: Colors.orangeAccent,
+        cursorColor: kOrange,
         decoration: InputDecoration(
           enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+              borderSide: BorderSide(color: kGrey, width: 1.0)),
           focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.orangeAccent)),
+              borderSide: BorderSide(color: kOrange)),
           border: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+              borderSide: BorderSide(color: kGrey, width: 1.0)),
           hintText: hintText,
         ),
         onFieldSubmitted: onSubmit,

@@ -14,6 +14,7 @@ import 'src/ui/recipe/screens/recipe_listing_screen.dart';
 import 'src/ui/user/provider/user_provider.dart';
 import 'src/ui/user/screens/user_detail_screen.dart';
 import 'src/ui/user/screens/user_listing_screen.dart';
+import 'src/utils/constants/color_constants.dart';
 import 'src/utils/localizations/locale_constant.dart';
 import 'src/utils/localizations/localizations_delegate.dart';
 
@@ -72,7 +73,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.orangeAccent,
+      statusBarColor: kOrange,
     ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -99,7 +100,7 @@ class _MyAppState extends State<MyApp> {
         return supportedLocales.first;
       },
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Colors.orangeAccent),
+        appBarTheme: const AppBarTheme(color: kOrange),
         fontFamily: 'Raleway-Medium',
       ),
     );

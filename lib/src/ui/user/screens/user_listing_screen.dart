@@ -35,7 +35,7 @@ class _UserListingScreenState extends State<UserListingScreen> {
       itemCount: _userData.user?.data.length ?? 0,
       itemBuilder: (BuildContext context, int index) {
         final data = _userData.user!.data[index];
-        return Container(
+        return Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: _userCardView(data),
         );

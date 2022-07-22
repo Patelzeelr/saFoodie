@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../api/auth/auth_api.dart';
 import '../../../base/api/url_factory.dart';
 import '../../../utils/constants/asset_constants.dart';
+import '../../../utils/constants/color_constants.dart';
 import '../../../utils/localizations/language/languages.dart';
-import '../../../utils/methods/field_focus_change.dart';
+import '../../../utils/methods/common_method.dart';
 import '../../../utils/methods/scaffold_extentions.dart';
-import '../../../utils/methods/show_message.dart';
 import '../../../utils/methods/validation.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_shape_clipper.dart';
@@ -87,7 +87,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     return _isLoad
         ? const Center(
             child: CircularProgressIndicator(
-              color: Colors.orangeAccent,
+              color: kOrange,
             ),
           )
         : SingleChildScrollView(
@@ -125,7 +125,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         child: Container(
           height: _clipHeight,
           decoration: const BoxDecoration(
-            color: Colors.orangeAccent,
+            color: kOrange,
           ),
           child: Padding(
             padding: const EdgeInsets.only(right: 10.0, top: 36.0),
@@ -139,11 +139,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
   _profileImage() => CircleAvatar(
         radius: _profileHeight / 2,
-        backgroundColor: Colors.black54,
+        backgroundColor: kBlackTwo,
         child: const CircleAvatar(
           radius: 68,
           backgroundImage: AssetImage(kAvatar),
-          backgroundColor: Colors.white,
+          backgroundColor: kWhite,
         ),
       );
 
@@ -215,23 +215,27 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         padding: const EdgeInsets.only(top: 30.0),
         child: CustomButton(
           label: Languages.of(context)!.updateUserButton,
-          onPressed: () async {
-            await AuthApi.updateUsers(
-              _userData.oneUser!.data.id,
-              SignUpReqModel(
-                  firstname: _firstNameController.text,
-                  lastname: _lastNameController.text,
-                  email: _userData.oneUser!.data.email,
-                  password: _passwordController.text,
-                  token: _userData.oneUser!.data.token,
-                  isActive: _userData.oneUser!.data.isActive),
-            );
-            Provider.of<UserProvider>(context, listen: false)
-                .getOneUser(context, _userData.oneUser!.data.id);
-            showMessage(Languages.of(context)!.updateUserMessage);
+          onPressed: () {
+            _updateUser();
           },
         ),
       );
+
+  _updateUser() async {
+    await AuthApi.updateUsers(
+      _userData.oneUser!.data.id,
+      SignUpReqModel(
+          firstname: _firstNameController.text,
+          lastname: _lastNameController.text,
+          email: _userData.oneUser!.data.email,
+          password: _passwordController.text,
+          token: _userData.oneUser!.data.token,
+          isActive: _userData.oneUser!.data.isActive),
+    );
+    Provider.of<UserProvider>(context, listen: false)
+        .getOneUser(context, _userData.oneUser!.data.id);
+    showMessage(Languages.of(context)!.updateUserMessage);
+  }
 
   _logOutButton() => GestureDetector(
         onTap: () async {
@@ -245,18 +249,18 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           height: 50,
           width: 50,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: kWhite,
             borderRadius: BorderRadius.circular(100),
             boxShadow: _isElevated
                 ? [
                     const BoxShadow(
-                      color: Colors.black26,
+                      color: kLightBlack,
                       offset: Offset(4, 4),
                       blurRadius: 15,
                       spreadRadius: 1,
                     ),
                     const BoxShadow(
-                      color: Colors.black26,
+                      color: kLightBlack,
                       offset: Offset(-4, -4),
                       blurRadius: 15,
                       spreadRadius: 1,

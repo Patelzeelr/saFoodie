@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/constants/color_constants.dart';
+
 class CustomButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
@@ -13,7 +15,7 @@ class CustomButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
         gradient: const LinearGradient(
-          colors: [Colors.yellow, Colors.orange],
+          colors: [kYellow, kOrange],
         ),
       ),
       child: MaterialButton(
@@ -21,7 +23,7 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: kWhite),
         ),
       ),
     );

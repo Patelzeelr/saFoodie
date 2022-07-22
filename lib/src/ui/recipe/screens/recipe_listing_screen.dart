@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/api/url_factory.dart';
 import '../../../utils/constants/asset_constants.dart';
+import '../../../utils/constants/color_constants.dart';
 import '../../../utils/constants/style_constants.dart';
 import '../../../utils/localizations/language/languages.dart';
 import '../../../utils/methods/scaffold_extentions.dart';
@@ -63,7 +63,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
     return _isLoad
         ? const Center(
             child: CircularProgressIndicator(
-              color: Colors.orangeAccent,
+              color: kOrange,
             ),
           )
         : SingleChildScrollView(
@@ -74,7 +74,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
                 _heading(),
                 _staticHorizontalImageListView(),
                 _headingRecipe(),
-                _recipeListView(),
+                _recipeListView()
               ],
             ),
           ).containerScaffold(context: context);
@@ -121,13 +121,41 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
   _recipeListView() => Consumer<RecipeProvider>(
         builder: (context, recipeData, child) => Padding(
           padding: const EdgeInsets.only(top: 16.0),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: recipeData.recipe?.data.length ?? 0,
-            itemBuilder: (context, index) {
-              return _customCard(recipeData.recipe!.data[index]);
-            },
+          child: recipeData.recipe!.data.isNotEmpty
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: recipeData.recipe?.data.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return _customCard(recipeData.recipe!.data[index]);
+                  },
+                )
+              : _customColumnEmptyData(),
+        ),
+      );
+
+  _customColumnEmptyData() => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [
+              Icon(
+                Icons.add_box_sharp,
+                color: kOrange,
+              ),
+              Text(
+                'You dont add any recipe yet',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'Add Now',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16.0),
+              ),
+            ],
           ),
         ),
       );
@@ -162,7 +190,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
             height: 140.0,
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: kWhite,
                 borderRadius: BorderRadius.circular(0.0),
                 boxShadow: [
                   BoxShadow(
@@ -184,23 +212,16 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: CachedNetworkImage(
+          child: Container(
             height: 150,
             width: 100,
-            imageUrl: data.photo,
-            imageBuilder: (context, imageProvider) => Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    colorFilter: const ColorFilter.mode(
-                        Colors.red, BlendMode.colorBurn)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14.0),
+              image: const DecorationImage(
+                image: AssetImage(kMenu),
+                fit: BoxFit.cover,
               ),
             ),
-            placeholder: (context, url) => const CircularProgressIndicator(
-              color: Colors.orangeAccent,
-            ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
       );
@@ -218,8 +239,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
               children: [
                 Text(
                   data.name,
-                  style:
-                      kRecipeNameTextStyle.copyWith(color: Colors.orangeAccent),
+                  style: kRecipeNameTextStyle.copyWith(color: kOrange),
                 ),
                 Row(
                   children: [
@@ -233,7 +253,7 @@ class _RecipeListingScreenState extends State<RecipeListingScreen> {
                   ],
                 ),
                 const Divider(
-                  color: Colors.orangeAccent,
+                  color: kOrange,
                 ),
                 Row(
                   children: [

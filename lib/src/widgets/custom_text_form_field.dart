@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/constants/color_constants.dart';
+
 class CustomTextFormField extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
@@ -32,12 +34,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: const Color(
-          0xFFf8f9fa,
-        ),
+        color: kWhite,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF858585).withOpacity(0.2),
+            color: kShadowColor.withOpacity(0.2),
             blurRadius: 8.0,
           ),
         ],
@@ -49,21 +49,21 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         onFieldSubmitted: widget.onSubmit,
         focusNode: widget.focusNode,
         keyboardType: widget.textInputType,
-        cursorColor: Colors.orangeAccent,
-        style: const TextStyle(color: Colors.black),
+        cursorColor: kOrange,
+        style: const TextStyle(color: kBlack),
         obscureText: _isObscureText(),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
+          hintStyle: const TextStyle(color: kGrey),
           enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+              borderSide: BorderSide(color: kGrey, width: 1.0)),
           focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.orangeAccent)),
+              borderSide: BorderSide(color: kOrange)),
           suffixIcon: widget.hintText.contains('Password')
               ? IconButton(
                   icon: Icon(
                     _isVisible ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
-                    color: Colors.black,
+                    color: kBlack,
                   ),
                   onPressed: () {
                     if (widget.hintText.contains('Password')) {

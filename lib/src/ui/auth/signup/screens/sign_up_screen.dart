@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../api/auth/auth_api.dart';
 import '../../../../utils/constants/asset_constants.dart';
+import '../../../../utils/constants/color_constants.dart';
 import '../../../../utils/constants/style_constants.dart';
 import '../../../../utils/localizations/language/languages.dart';
-import '../../../../utils/methods/field_focus_change.dart';
-import '../../../../utils/methods/navigation_method.dart';
+import '../../../../utils/methods/common_method.dart';
 import '../../../../utils/methods/scaffold_extentions.dart';
 import '../../../../utils/methods/validation.dart';
 import '../../../../widgets/custom_button.dart';
@@ -51,7 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return _isIndicate
         ? const Center(
-            child: CircularProgressIndicator(color: Colors.orangeAccent),
+            child: CircularProgressIndicator(color: kOrange),
           )
         : SingleChildScrollView(
             child: SafeArea(
@@ -153,28 +153,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.only(top: 20.0),
         child: CustomButton(
           label: Languages.of(context)!.signUp,
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              setState(() {
-                _isIndicate = true;
-              });
-              final response = await AuthApi.registerUser(
-                SignUpReqModel(
-                    firstname: _firstNameController.text,
-                    lastname: _lastNameController.text,
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    token: "",
-                    isActive: true),
-              );
-              if (response.code == 200) {
-                Navigator.of(context).pushAndRemoveUntil(
-                    createRoute(
-                      const SignInScreen(),
-                    ),
-                    (route) => false);
-              } else {}
-            }
+          onPressed: () {
+            _signUpUser();
           },
         ),
       );
@@ -208,4 +188,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       );
+
+  _signUpUser() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isIndicate = true;
+      });
+      final response = await AuthApi.registerUser(
+        SignUpReqModel(
+            firstname: _firstNameController.text,
+            lastname: _lastNameController.text,
+            email: _emailController.text,
+            password: _passwordController.text,
+            token: "",
+            isActive: true),
+      );
+      if (response.code == 200) {
+        Navigator.of(context).pushAndRemoveUntil(
+            createRoute(
+              const SignInScreen(),
+            ),
+            (route) => false);
+      } else {}
+    }
+  }
 }
